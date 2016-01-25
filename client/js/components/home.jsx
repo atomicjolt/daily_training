@@ -2,6 +2,8 @@
 
 import React                    from 'react';
 import assets                   from '../libs/assets';
+import Request                  from 'superagent';
+import _                        from 'lodash';
 
 // Component lifecycle docs:
 // https://facebook.github.io/react/docs/component-specs.html
@@ -10,13 +12,12 @@ class Home extends React.Component {
 
   constructor(){
     super();
-    this.state = {
-      text: "Initial text"
-    };
+    this.state = {};
   }
 
   componentWillMount(){
     // Called the first time the component is loaded right before the component is added to the page
+    this.search();
   }
 
   componentDidMount(){
@@ -35,20 +36,28 @@ class Home extends React.Component {
     // Called when the component is removed
   }
 
-  clicked(){
-    this.setState({ text: this.refs.textBox.value });
+  updateSearch(){
+    this.search(this.refs.query.value);
   }
 
-  render(){
-    
-    const img = assets("./images/atomicjolt.jpg");
-
+  render(){  
+    var movies = _.map(this.state.movies, (movie) => {
+      return <li>{movie.Title}</li>;
+    });
     return <div>
-      { this.state.text }
-      <img src={img} />
-      <input ref="textBox" type="text" />
-      <button id="button" onClick={ (e) => { this.clicked(); } }>TheButton</button>
+      <input ref="query" onChange={ (e) => { this.updateSearch(); } } type="text" />
+      <ul>{movies}</ul>
     </div>;
+  }
+
+  search(query = "star"){
+    var url = `http://www.omdbapi.com?s=${query}&y=&r=json&plot=short`;
+    Request.get(url).then((response) => {
+      this.setState({
+        movies: response.body.Search,
+        total: response.body.totalResults
+      });
+    });
   }
 
 }

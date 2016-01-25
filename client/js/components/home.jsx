@@ -48,7 +48,6 @@ class Home extends React.Component {
       <img src={img} />
       <input ref="textBox" type="text" />
       <button id="button" onClick={ (e) => { this.clicked(); } }>TheButton</button>
-      <MyComponent color={this.state.color} />
     </div>;
   }
 

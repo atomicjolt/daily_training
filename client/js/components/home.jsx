@@ -12,7 +12,10 @@ class Home extends React.Component {
 
   constructor(){
     super();
-    this.state = {};
+    this.state = {
+      query: "trek",
+      currentMovieId: "tt2488496"
+    };
   }
 
   componentWillMount(){
@@ -37,16 +40,33 @@ class Home extends React.Component {
   }
 
   updateSearch(){
+    this.setState({query: this.refs.query.value});
     this.search(this.refs.query.value);
+  }
+
+  selectMovie(){
+    this.setState({currentMovieId: this.refs.movieSelector.value});
   }
 
   render(){  
     var movies = _.map(this.state.movies, (movie) => {
-      return <li>{movie.Title}</li>;
+      return <li key={movie.imdbID}>{movie.Title}</li>;
     });
+    var options = _.map(this.state.movies, (movie) => {
+      return <option key={`option_${movie.imdbID}`} value={movie.imdbID}>{movie.Title}</option>;
+    });
+    var selectedMovie = _.find(this.state.movies, (movie) => {
+      return movie.imdbID == this.state.currentMovieId;
+    });
+    var img;
+    if(selectedMovie){
+      img = <img src={selectedMovie.Poster} />;
+    }
     return <div>
-      <input ref="query" onChange={ (e) => { this.updateSearch(); } } type="text" />
+      <input ref="query" onChange={ (e) => { this.updateSearch(); } } type="text" value={this.state.query} />
+      <select ref="movieSelector" value={this.state.currentMovieId} onChange={ (e) => { this.selectMovie(); } } >{options}</select>
       <ul>{movies}</ul>
+      {img}
     </div>;
   }
 

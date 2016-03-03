@@ -4,6 +4,7 @@ import React         from "react";
 import { connect }   from 'react-redux';
 import Message       from "./message";
 import Immutable     from 'immutable';
+import {addMessage}  from "../../actions/message";
 
 const select = (state) => {
   return { 
@@ -11,7 +12,15 @@ const select = (state) => {
   };
 };
 
-@connect(select, null, null, {withRef: true})
+const actions = (dispatch) => {
+  return {
+    addMessage: (message) => {
+      dispatch(addMessage(message));
+    }
+  }
+}
+
+@connect(select, actions, null, {withRef: true})
 export default class Messages extends React.Component{
 
   render() {
